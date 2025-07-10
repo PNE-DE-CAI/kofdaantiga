@@ -180,8 +180,6 @@
 <body>
     <div class="scanlines"></div>
     <div class="loading-bar"></div>
-     <p>Total de visitas:</p>
-    <div class="contador" id="contador">0</div>
     <header class="container mx-auto py-6 px-4">
         <div class="text-center mb-8">
             <h1 class="arcade-font neon-red text-4xl md:text-6xl mb-4">KOF DA ANTIGA - Torneio Chama Baixo</h1>
@@ -1042,18 +1040,7 @@
                 currentCarouselIndex--;
                 carousel.scrollLeft = currentCarouselIndex * 315;
             }
-        }
-        // Verifica se já existe um contador no localStorage
-        if (localStorage.getItem('visitas')) {
-            // Se existir, incrementa +1
-            let visitas = parseInt(localStorage.getItem('visitas')) + 1;
-            localStorage.setItem('visitas', visitas);
-            document.getElementById('contador').textContent = visitas;
-        } else {
-            // Se não existir, inicia com 1
-            localStorage.setItem('visitas', 1);
-            document.getElementById('contador').textContent = 1;
-        }
+       
             });
     </script>
 </body>
