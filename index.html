@@ -1043,19 +1043,17 @@
                 carousel.scrollLeft = currentCarouselIndex * 315;
             }
         }
-        // Define um NOME ÚNICO para seu contador (ex: 'meu-site.github.io')
-         const NAMESPACE = "https://pne-de-cai.github.io/kofdaantiga/";
-        const KEY = "visitas-totais";
-
-        // Incrementa +1 visita e mostra o total
-        fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("contador").textContent = data.value;
-            })
-            .catch(error => {
-                console.error("Erro ao carregar contador:", error);
-                document.getElementById("contador").textContent = "Erro";
+        // Verifica se já existe um contador no localStorage
+        if (localStorage.getItem('visitas')) {
+            // Se existir, incrementa +1
+            let visitas = parseInt(localStorage.getItem('visitas')) + 1;
+            localStorage.setItem('visitas', visitas);
+            document.getElementById('contador').textContent = visitas;
+        } else {
+            // Se não existir, inicia com 1
+            localStorage.setItem('visitas', 1);
+            document.getElementById('contador').textContent = 1;
+        }
             });
     </script>
 </body>
