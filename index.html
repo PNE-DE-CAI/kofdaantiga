@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> KOF DA ANTIGA - Arcade Team - JD ALEGRIA</title>
+           <img src="https://i.ibb.co/N6SHXvwK/tela.jpg"  class="w-full h-full">
+       <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        :root {
+            --neon-red: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-yellow: #f7f736;
+        }
+        
+        body {
+            background-color: #0a0a1a;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 42, 109, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(5, 217, 232, 0.1) 0%, transparent 20%);
+        }
+        
+        .arcade-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        .neon-red {
+            color: var(--neon-red);
+            text-shadow: 0 0 5px var(--neon-red), 0 0 10px var(--neon-red);
+        }
+        
+        .neon-blue {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        }
+        
+        .neon-purple {
+            color: var(--neon-purple);
+            text-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-purple);
+        }
+        
+        .neon-yellow {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 5px var(--neon-yellow), 0 0 10px var(--neon-yellow);
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(0, 0, 0, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .glow-box {
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            }
+            100% {
+                box-shadow: 0 0 20px var(--neon-blue), inset 0 0 20px var(--neon-blue);
+            }
+        }
+        
+        .rank-A {
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        
+        .rank-B {
+            color: #00cc00;
+            text-shadow: 0 0 5px #00cc00;
+        }
+        
+        .rank-C {
+            color: #ffff00;
+            text-shadow: 0 0 5px #ffff00;
+        }
+        
+        .rank-D {
+            color: #ff9900;
+            text-shadow: 0 0 5px #ff9900;
+        }
+        
+        .rank-E {
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .carousel-item {
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+            width: 300px;
+            margin-right: 15px;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-purple);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-red);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .character-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 42, 109, 0.3);
+        }
+        
+        .loading-bar {
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-red), var(--neon-purple), var(--neon-blue));
+            background-size: 200% 100%;
+            animation: loading 2s linear infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="loading-bar"></div>
+    
+    <header class="container mx-auto py-6 px-4">
+        <div class="text-center mb-8">
+            <h1 class="arcade-font neon-red text-4xl md:text-6xl mb-4">KOF DA ANTIGA - Arcade Team</h1>
+            <p class="arcade-font neon-blue text-sm md:text-lg">THE ULTIMATE ARCADE TEAM - JD ALEGRIA</p>
+            <div class="flex justify-center mt-4">
+                <div class="w-16 h-1 bg-purple-500 mx-2"></div>
+                <div class="w-16 h-1 bg-blue-500 mx-2"></div>
+                <div class="w-16 h-1 bg-red-500 mx-2"></div>
+            </div>
+        </div>
+        
+        <nav class="flex justify-center mb-8">
+            <ul class="flex space-x-2 md:space-x-6">
+                <li>
+                    <button onclick="openTab('members')" class="arcade-font neon-yellow bg-black bg-opacity-50 px-4 py-2 rounded-lg border-2 border-yellow-400 hover:bg-yellow-400 hover:text-black transition-all">
+                        <i class="fas fa-users mr-2"></i>MEMBROS
+                    </button>
+                </li>
+                <li>
+                    <button onclick="openTab('championship')" class="arcade-font neon-blue bg-black bg-opacity-50 px-4 py-2 rounded-lg border-2 border-blue-400 hover:bg-blue-400 hover:text-black transition-all">
+                        <i class="fas fa-trophy mr-2"></i>CAMPEONATO
+                    </button>
+                </li>
+                <li>
+                    <button onclick="openTab('gallery')" class="arcade-font neon-purple bg-black bg-opacity-50 px-4 py-2 rounded-lg border-2 border-purple-400 hover:bg-purple-400 hover:text-black transition-all">
+                        <i class="fas fa-images mr-2"></i>GALERIA
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main class="container mx-auto px-4 pb-16">
+        <!-- Members Tab -->
+        <div id="members" class="tab-content active">
+            <h2 class="arcade-font neon-red text-2xl md:text-3xl mb-6 text-center">OS 20 GUERREIROS</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Member 1 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-red-900 rounded-full overflow-hidden border-2 border-red-500">
+                                <img src="https://www.fightersgeneration.com/np5/kof12/kyo-12s.gif" alt="Juninho" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-red text-lg">Juninho</h3>
+                                <p class="text-gray-300 text-sm">Líder do Esquadrão</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Mestre das chamas e estrategista principal. 15 anos de experiência em torneios.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-A text-sm">CLASSIFICAÇÃO: A</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 42 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 2 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-blue-900 rounded-full overflow-hidden border-2 border-blue-500">
+                                <img src="https://www.fightersgeneration.com/characters2/iori-cvs.gif" alt="Iori Yagami" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-purple text-lg">Thiago Beiço</h3>
+                                <p class="text-gray-300 text-sm">Especialista em Combate</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Técnicas brutais e imprevisíveis. 12 anos de torneios com 90% de vitórias.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-A text-sm">CLASSIFICAÇÃO: A</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 38 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 3 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-green-900 rounded-full overflow-hidden border-2 border-green-500">
+                                <img src="https://www.fightersgeneration.com/characters4/terry-cvs-stancefix.gif" alt="Terry Bogard" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-yellow text-lg">Severo</h3>
+                                <p class="text-gray-300 text-sm">Lutador de Rua</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Estilo único adaptado de vários torneios. 18 anos de experiência em combate.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-A text-sm">CLASSIFICAÇÃO: A</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 36 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 4 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-purple-900 rounded-full overflow-hidden border-2 border-purple-500">
+                                <img src="https://www.fightersgeneration.com/np5/kof13/mai-kof13-stance.gif" alt="Mai Shiranui" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-purple text-lg">Murilo</h3>
+                                <p class="text-gray-300 text-sm">Ninja Especialista</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Velocidade e agilidade incomparáveis. 10 anos em torneios internacionais.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-B text-sm">CLASSIFICAÇÃO: B</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 32 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 5 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-red-900 rounded-full overflow-hidden border-2 border-red-500">
+                                <img src="https://www.fightersgeneration.com/characters3/snk-ryo3.gif" alt="Ryo Sakazaki" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-red text-lg">Fabiano</h3>
+                                <p class="text-gray-300 text-sm">Mestre do Karatê</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Técnicas poderosas e precisas. 14 anos de treinamento intensivo.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-B text-sm">CLASSIFICAÇÃO: B</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 30 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 6 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-blue-900 rounded-full overflow-hidden border-2 border-blue-500">
+                                <img src="https://www.fightersgeneration.com/nz8/char/gif/leona-2k2/leona-kof2k2-stance.gif" alt="Leona" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-blue text-lg">Ricardo</h3>
+                                <p class="text-gray-300 text-sm">Especialista Militar</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Táticas militares aplicadas em combate. 8 anos de experiência em campo.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-B text-sm">CLASSIFICAÇÃO: B</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 28 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 7 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-green-900 rounded-full overflow-hidden border-2 border-green-500">
+                                <img src="https://www.fightersgeneration.com/characters2/kimcvskicks.gif" alt="Kim Kaphwan" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-yellow text-lg">Elizeo</h3>
+                                <p class="text-gray-300 text-sm">Mestre do Taekwondo</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Chutes poderosos e técnicas aéreas. 16 anos ensinando artes marciais.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-B text-sm">CLASSIFICAÇÃO: B</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 26 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 8 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-purple-900 rounded-full overflow-hidden border-2 border-purple-500">
+                                <img src="https://www.fightersgeneration.com/characters/athena-entrance.gif" alt="Athena Asamiya" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-purple text-lg">Levy</h3>
+                                <p class="text-gray-300 text-sm">Idol Psíquica</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Combina habilidades psíquicas com técnicas de luta. 7 anos em torneios.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-C text-sm">CLASSIFICAÇÃO: C</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 24 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 9 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-red-900 rounded-full overflow-hidden border-2 border-red-500">
+                                <img src="https://www.fightersgeneration.com/characters4/yashiro-stance-alt.gif" alt="Yashiro Nanakase" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-red text-lg">Bores</h3>
+                                <p class="text-gray-300 text-sm">Poder Bruto</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Força física excepcional. 5 anos de competições com estilo agressivo.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-C text-sm">CLASSIFICAÇÃO: C</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 22 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 10 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-blue-900 rounded-full overflow-hidden border-2 border-blue-500">
+                                <img src="https://www.fightersgeneration.com/characters3/shermie-tauntd.gif" alt="Shermie" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-blue text-lg">Cassiano</h3>
+                                <p class="text-gray-300 text-sm">Grappler Elétrica</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Técnicas de grappling com choques elétricos. 6 anos de torneios.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-C text-sm">CLASSIFICAÇÃO: C</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 20 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 11 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-green-900 rounded-full overflow-hidden border-2 border-green-500">
+                                <img src="https://www.fightersgeneration.com/characters/chris-mooon.gif" alt="Chris" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-yellow text-lg">Ricardo Luiz</h3>
+                                <p class="text-gray-300 text-sm">Velocidade Pura</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Movimentos rápidos e ataques surpresa. 4 anos de experiência.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-C text-sm">CLASSIFICAÇÃO: C</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 18 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 12 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-purple-900 rounded-full overflow-hidden border-2 border-purple-500">
+                                <img src="https://www.fightersgeneration.com/nz8/char/yuri-sakazami-kof94-rebout-sprite.gif" alt="Yuri Sakazaki" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-purple text-lg">Thiago Valverde</h3>
+                                <p class="text-gray-300 text-sm">Estilo Adaptável</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Versátil e imprevisível. 5 anos aprendendo diversos estilos.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-D text-sm">CLASSIFICAÇÃO: D</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 16 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 13 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-red-900 rounded-full overflow-hidden border-2 border-red-500">
+                                <img src="https://www.fightersgeneration.com/nf8/char/clark-kof94-rebout-stance.gif" alt="Clark Still" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-red text-lg">Felipe Machado</h3>
+                                <p class="text-gray-300 text-sm">Especialista em Wrestling</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Técnicas de wrestling militar. 10 anos de experiência.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-D text-sm">CLASSIFICAÇÃO: D</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 14 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 14 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-blue-900 rounded-full overflow-hidden border-2 border-blue-500">
+                                <img src="https://www.fightersgeneration.com/characters/choi-1st.gif" alt="Ralf Jones" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-blue text-lg">Miro</h3>
+                                <p class="text-gray-300 text-sm">Poder Explosivo</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Força bruta e explosiva. 12 anos em combate.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-D text-sm">CLASSIFICAÇÃO: D</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 12 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 15 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-green-900 rounded-full overflow-hidden border-2 border-green-500">
+                                <img src="https://www.fightersgeneration.com/characters3/snk-robert3.gif" alt="Robert Garcia" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-yellow text-lg">Takito</h3>
+                                <p class="text-gray-300 text-sm">Karatê Moderno</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Estilo refinado de karatê. 8 anos de torneios.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-D text-sm">CLASSIFICAÇÃO: D</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 10 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 16 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-purple-900 rounded-full overflow-hidden border-2 border-purple-500">
+                                <img src="https://i.ibb.co/N6SHXvwK/tela.jpg" alt="King" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-purple text-lg">Vaga01</h3>
+                                <p class="text-gray-300 text-sm">Especialista em Chutes</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Técnicas de Muay Thai adaptadas. 7 anos de experiência.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-E text-sm">CLASSIFICAÇÃO: E</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 8 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 17 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-red-900 rounded-full overflow-hidden border-2 border-red-500">
+                                <img src="https://i.ibb.co/N6SHXvwK/tela.jpg"alt="Chang Koehan" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-red text-lg">Vaga02</h3>
+                                <p class="text-gray-300 text-sm">Força Descomunal</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Poder físico extremo. 5 anos em torneios.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-E text-sm">CLASSIFICAÇÃO: E</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 6 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 18 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-blue-900 rounded-full overflow-hidden border-2 border-blue-500">
+                                <img src="https://i.ibb.co/N6SHXvwK/tela.jpg"alt="Choi Bounge" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-blue text-lg">Vaga03</h3>
+                                <p class="text-gray-300 text-sm">Velocidade e Agilidade</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Movimentos rápidos e imprevisíveis. 4 anos de experiência.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-E text-sm">CLASSIFICAÇÃO: E</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 4 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 19 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-green-900 rounded-full overflow-hidden border-2 border-green-500">
+                                <img src="https://i.ibb.co/N6SHXvwK/tela.jpg" alt="Benimaru Nikaido" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-yellow text-lg">Vaga04</h3>
+                                <p class="text-gray-300 text-sm">Eletricidade Dinâmica</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Combina eletricidade com artes marciais. 6 anos de torneios.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-E text-sm">CLASSIFICAÇÃO: E</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 2 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 20 -->
+                <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-16 h-16 bg-purple-900 rounded-full overflow-hidden border-2 border-purple-500">
+                                <img src="https://i.ibb.co/N6SHXvwK/tela.jpg" alt="Goro Daimon" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="arcade-font neon-purple text-lg">Vaga05</h3>
+                                <p class="text-gray-300 text-sm">Especialista em Judô</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-3">Técnicas de judô poderosas. 9 anos de experiência.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="arcade-font rank-E text-sm">CLASSIFICAÇÃO: E</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 0 vitórias</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Championship Tab -->
+        <div id="championship" class="tab-content">
+            <h2 class="arcade-font neon-blue text-2xl md:text-3xl mb-6 text-center">TABELA DO CAMPEONATO</h2>
+            
+            <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box mb-8">
+                <div class="p-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="arcade-font neon-yellow text-sm border-b border-yellow-400">
+                                    <th class="px-4 py-2 text-left">POSIÇÃO</th>
+                                    <th class="px-4 py-2 text-left">NOME</th>
+                                    <th class="px-4 py-2 text-center">VITÓRIAS</th>
+                                    <th class="px-4 py-2 text-center">DERROTAS</th>
+                                    <th class="px-4 py-2 text-center">CLASSIFICAÇÃO</th>
+                                    <th class="px-4 py-2 text-center">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-table">
+                                <!-- Rows will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="arcade-font neon-purple text-xl">EDITAR CLASSIFICAÇÃO</h3>
+                <button onclick="randomizeRankings()" class="arcade-font bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-random mr-2"></i>EMBARALHAR
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box p-4">
+                    <h4 class="arcade-font neon-red text-lg mb-4">PROMOVER JOGADOR</h4>
+                    <div class="flex items-center mb-4">
+                        <select id="promote-select" class="bg-gray-800 text-white rounded-lg px-4 py-2 flex-grow mr-2">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                        <button onclick="promotePlayer()" class="arcade-font bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-arrow-up mr-2"></i>PROMOVER
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box p-4">
+                    <h4 class="arcade-font neon-blue text-lg mb-4">REBAIXAR JOGADOR</h4>
+                    <div class="flex items-center mb-4">
+                        <select id="demote-select" class="bg-gray-800 text-white rounded-lg px-4 py-2 flex-grow mr-2">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                        <button onclick="demotePlayer()" class="arcade-font bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-arrow-down mr-2"></i>REBAIXAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gallery Tab -->
+        <div id="gallery" class="tab-content">
+            <h2 class="arcade-font neon-purple text-2xl md:text-3xl mb-6 text-center">GALERIA DO CAMPEONATO</h2>
+            
+            <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box mb-8 p-4">
+                <div class="carousel mb-4" id="championship-carousel">
+                    <!-- Carousel items will be populated by JavaScript -->
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <button onclick="prevSlide()" class="arcade-font bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-chevron-left mr-2"></i>ANTERIOR
+                    </button>
+                    <button onclick="nextSlide()" class="arcade-font bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                        PRÓXIMO<i class="fas fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <h3 class="arcade-font neon-yellow text-lg mb-2">MELHORES MOMENTOS</h3>
+                        <div class="aspect-w-16 aspect-h-9 mb-3">
+                            <img src="https://www.fightersgeneration.com/nz5/game/kof98/kof98-screenshot4.jpg" alt="KOF Screenshot" class="w-full h-auto rounded-lg">
+                        </div>
+                        <p class="text-gray-300 text-sm">Kyo vs Iori - Final lendária do torneio de 2024</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <h3 class="arcade-font neon-red text-lg mb-2">TREINAMENTO</h3>
+                        <div class="aspect-w-16 aspect-h-9 mb-3">
+                            <img src="https://www.fightersgeneration.com/nz5/game/kof98/kof98-screenshot2.jpg" alt="KOF Screenshot" class="w-full h-auto rounded-lg">
+                        </div>
+                        <p class="text-gray-300 text-sm">Sessão de treino intensivo do time</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                    <div class="p-4">
+                        <h3 class="arcade-font neon-blue text-lg mb-2">CELEBRAÇÃO</h3>
+                        <div class="aspect-w-16 aspect-h-9 mb-3">
+                            <img src="https://www.fightersgeneration.com/nz5/game/kof98/kof98-screenshot3.jpg" alt="KOF Screenshot" class="w-full h-auto rounded-lg">
+                        </div>
+                        <p class="text-gray-300 text-sm">Vitória do time no último torneio nacional</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="bg-black bg-opacity-50 py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p class="arcade-font neon-purple text-sm">© 2025 KOF DA ANTIGA - Arcade Team - JD ALEGRIA  TODOS OS DIREITOS RESERVADOS</p>
+            <p class="text-gray-400 text-xs mt-2">Desenvolvido com  ♥ para fãs de The King of Fighters </p>
+            <div class="flex justify-center mt-4 space-x-4">
+                <a href="#" class="text-gray-400 hover:text-yellow-400"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-red-500"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="text-gray-400 hover:text-purple-500"><i class="fab fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Team members data
+        const teamMembers = [
+            { id: 1, name: "Juninho", position: 1, wins: 42, losses: 8, rank: "A", character: "Juninho", role: "Líder do Esquadrão", description: "Mestre das chamas e estrategista principal. 15 anos de experiência em torneios.", image: "https://i.ibb.co/ZzF0vWYD/junu.jpg" },
+            { id: 2, name: "Thiago Beiço", position: 2, wins: 38, losses: 10, rank: "A", character: "Thiago Beiço", role: "Especialista em Combate", description: "Técnicas brutais e imprevisíveis. 12 anos de torneios com 90% de vitórias.", image: "https://i.ibb.co/rK7SJX0j/thiagobeico.jpg" },
+            { id: 3, name: "Severo", position: 3, wins: 36, losses: 12, rank: "A", character: "Severo", role: "Lutador de Rua", description: "Estilo único adaptado de vários torneios. 18 anos de experiência em combate.", image: "https://i.ibb.co/hJS54jXD/severo.jpg" },
+            { id: 4, name: "Murilo", position: 4, wins: 32, losses: 16, rank: "B", character: "Murilo", role: "Ninja Especialista", description: "Velocidade e agilidade incomparáveis. 10 anos em torneios internacionais.", image: "https://i.ibb.co/dsCnBZYL/murrr.jpg" },
+            { id: 5, name: "Fabiano", position: 5, wins: 30, losses: 18, rank: "B", character: "Fabiano", role: "Mestre do Karatê", description: "Técnicas poderosas e precisas. 14 anos de treinamento intensivo.", image: "https://i.ibb.co/kV9ZhM6Y/Big.jpg" },
+            { id: 6, name: "Ricardo", position: 6, wins: 28, losses: 20, rank: "B", character: "Ricardo", role: "Especialista Militar", description: "Táticas militares aplicadas em combate. 8 anos de experiência em campo.", image: "https://i.ibb.co/Q3s17tg0/ricarrdo1.jpg" },
+            { id: 7, name: "Elizeo", position: 7, wins: 26, losses: 22, rank: "B", character: "Elizeo", role: "Mestre do Taekwondo", description: "Chutes poderosos e técnicas aéreas. 16 anos ensinando artes marciais.", image: "https://i.ibb.co/sJWMy05v/elizeo.jpg" },
+            { id: 8, name: "Levy", position: 8, wins: 24, losses: 24, rank: "C", character: "Levy", role: "Idol Psíquica", description: "Combina habilidades psíquicas com técnicas de luta. 7 anos em torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 9, name: "Bores", position: 9, wins: 22, losses: 26, rank: "C", character: "Bores", role: "Poder Bruto", description: "Força física excepcional. 5 anos de competições com estilo agressivo.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 10, name: "Cassiano", position: 10, wins: 20, losses: 28, rank: "C", character: "Cassiano", role: "Grappler Elétrica", description: "Técnicas de grappling com choques elétricos. 6 anos de torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 11, name: "Ricardo Luiz", position: 11, wins: 18, losses: 30, rank: "C", character: "Ricardo Luiz", role: "Velocidade Pura", description: "Movimentos rápidos e ataques surpresa. 4 anos de experiência.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 12, name: "Thiago Valverde", position: 12, wins: 16, losses: 32, rank: "D", character: "Thiago Valverde", role: "Estilo Adaptável", description: "Versátil e imprevisível. 5 anos aprendendo diversos estilos.", image: "https://i.ibb.co/WvWfWHDM/Valverde.jpg" },
+            { id: 13, name: "Felipe Machado", position: 13, wins: 14, losses: 34, rank: "D", character: "Felipe Machado", role: "Especialista em Wrestling", description: "Técnicas de wrestling militar. 10 anos de experiência.", image: "https://i.ibb.co/JRb5k8RT/Felipe-macg.jpg" },
+            { id: 14, name: "Miro", position: 14, wins: 12, losses: 36, rank: "D", character: "Miro", role: "Poder Explosivo", description: "Força bruta e explosiva. 12 anos em combate.", image: "https://i.ibb.co/QFKFhRC1/mir.jpg" },
+            { id: 15, name: "Takito", position: 15, wins: 10, losses: 38, rank: "D", character: "Takito", role: "Karatê Moderno", description: "Estilo refinado de karatê. 8 anos de torneios.", image: "https://i.ibb.co/kVRtF4cT/luuc.jpg" },
+            { id: 16, name: "Vaga01", position: 16, wins: 0, losses: 0, rank: "E", character: "Vaga01", role: "Especialista em Chutes", description: "Técnicas de Muay Thai adaptadas. 7 anos de experiência.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 17, name: "Vaga02", position: 17, wins: 0, losses: 0, rank: "E", character: "Vaga02", role: "Força Descomunal", description: "Poder físico extremo. 5 anos em torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 18, name: "Vaga03", position: 18, wins: 0, losses: 0, rank: "E", character: "Vaga03", role: "Velocidade e Agilidade", description: "Movimentos rápidos e imprevisíveis. 4 anos de experiência.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 19, name: "Vaga04", position: 19, wins: 0, losses: 0, rank: "E", character: "Vaga04", role: "Eletricidade Dinâmica", description: "Combina eletricidade com artes marciais. 6 anos de torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+            { id: 20, name: "Vaga05", position: 20, wins: 0, losses: 0, rank: "E", character: "Vaga05", role: "Especialista em Judô", description: "Técnicas de judô poderosas. 9 anos de experiência.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" }
+        ];
+
+        // Carousel current index
+        let currentCarouselIndex = 0;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateRankingTable();
+            updateSelectOptions();
+            updateCarousel();
+        });
+
+        // Tab switching function
+        function openTab(tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Update ranking table
+        function updateRankingTable() {
+            const tableBody = document.getElementById('ranking-table');
+            tableBody.innerHTML = '';
+
+            // Sort by position
+            const sortedMembers = [...teamMembers].sort((a, b) => a.position - b.position);
+
+            sortedMembers.forEach(member => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-700 hover:bg-gray-800';
+                row.innerHTML = `
+                    <td class="px-4 py-3 arcade-font text-center">${member.position}º</td>
+                    <td class="px-4 py-3 flex items-center">
+                        <img src="${member.image}" alt="${member.name}" class="w-8 h-8 rounded-full mr-3">
+                        <span>${member.name}</span>
+                    </td>
+                    <td class="px-4 py-3 text-center text-green-400">${member.wins}</td>
+                    <td class="px-4 py-3 text-center text-red-400">${member.losses}</td>
+                    <td class="px-4 py-3 text-center arcade-font rank-${member.rank}">${member.rank}</td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="addWin(${member.id})" class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs mr-1">
+                            <i class="fas fa-plus"></i> Vitória
+                        </button>
+                        <button onclick="addLoss(${member.id})" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs">
+                            <i class="fas fa-minus"></i> Derrota
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Update select options
+        function updateSelectOptions() {
+            const promoteSelect = document.getElementById('promote-select');
+            const demoteSelect = document.getElementById('demote-select');
+            
+            promoteSelect.innerHTML = '';
+            demoteSelect.innerHTML = '';
+            
+            // Sort by position
+            const sortedMembers = [...teamMembers].sort((a, b) => a.position - b.position);
+            
+            // Add options to promote select (everyone except first)
+            sortedMembers.slice(1).forEach(member => {
+                const option = document.createElement('option');
+                option.value = member.id;
+                option.textContent = `${member.position}º - ${member.name}`;
+                promoteSelect.appendChild(option);
+            });
+            
+            // Add options to demote select (everyone except last)
+            sortedMembers.slice(0, -1).forEach(member => {
+                const option = document.createElement('option');
+                option.value = member.id;
+                option.textContent = `${member.position}º - ${member.name}`;
+                demoteSelect.appendChild(option);
+            });
+        }
+
+        // Promote a player (move up one position)
+        function promotePlayer() {
+            const select = document.getElementById('promote-select');
+            const memberId = parseInt(select.value);
+            
+            if (!memberId) return;
+            
+            const member = teamMembers.find(m => m.id === memberId);
+            const memberAbove = teamMembers.find(m => m.position === member.position - 1);
+            
+            if (member && memberAbove) {
+                // Swap positions
+                const tempPos = member.position;
+                member.position = memberAbove.position;
+                memberAbove.position = tempPos;
+                
+                // Update rank if crossing threshold
+                updateRanks();
+                
+                updateRankingTable();
+                updateSelectOptions();
+            }
+        }
+
+        // Demote a player (move down one position)
+        function demotePlayer() {
+            const select = document.getElementById('demote-select');
+            const memberId = parseInt(select.value);
+            
+            if (!memberId) return;
+            
+            const member = teamMembers.find(m => m.id === memberId);
+            const memberBelow = teamMembers.find(m => m.position === member.position + 1);
+            
+            if (member && memberBelow) {
+                // Swap positions
+                const tempPos = member.position;
+                member.position = memberBelow.position;
+                memberBelow.position = tempPos;
+                
+                // Update rank if crossing threshold
+                updateRanks();
+                
+                updateRankingTable();
+                updateSelectOptions();
+            }
+        }
+
+        // Add a win to a player
+        function addWin(memberId) {
+            const member = teamMembers.find(m => m.id === memberId);
+            if (member) {
+                member.wins++;
+                updateRankingTable();
+            }
+        }
+
+        // Add a loss to a player
+        function addLoss(memberId) {
+            const member = teamMembers.find(m => m.id === memberId);
+            if (member) {
+                member.losses++;
+                updateRankingTable();
+            }
+        }
+
+        // Update ranks based on position
+        function updateRanks() {
+            // Sort by position
+            const sortedMembers = [...teamMembers].sort((a, b) => a.position - b.position);
+            
+            // Assign ranks based on position
+            sortedMembers.forEach((member, index) => {
+                if (index < 3) member.rank = "A";
+                else if (index < 7) member.rank = "B";
+                else if (index < 11) member.rank = "C";
+                else if (index < 16) member.rank = "D";
+                else member.rank = "E";
+            });
+        }
+
+        // Randomize rankings
+        function randomizeRankings() {
+            // Shuffle positions
+            const positions = Array.from({length: 20}, (_, i) => i + 1);
+            positions.sort(() => Math.random() - 0.5);
+            
+            // Assign new positions
+            teamMembers.forEach((member, index) => {
+                member.position = positions[index];
+            });
+            
+            // Update ranks and UI
+            updateRanks();
+            updateRankingTable();
+            updateSelectOptions();
+        }
+
+        // Update carousel
+        function updateCarousel() {
+            const carousel = document.getElementById('championship-carousel');
+            carousel.innerHTML = '';
+            
+            // Sort by position
+            const sortedMembers = [...teamMembers].sort((a, b) => a.position - b.position);
+            
+            // Take top 6 for carousel
+            const topMembers = sortedMembers.slice(0, 6);
+            
+            topMembers.forEach(member => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.innerHTML = `
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <div class="p-4">
+                            <div class="flex items-center mb-3">
+                                <div class="w-16 h-16 rounded-full overflow-hidden border-2 ${getBorderColor(member.rank)}">
+                                    <img src="${member.image}" alt="${member.name}" class="w-full h-full object-cover">
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="arcade-font ${getTextColor(member.rank)} text-lg">${member.name}</h3>
+                                    <p class="text-gray-300 text-sm">${member.position}º Colocado</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="arcade-font ${getRankClass(member.rank)} text-sm">CLASSIFICAÇÃO: ${member.rank}</span>
+                                <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> ${member.wins} vitórias</span>
+                            </div>
+                        </div>
+                        <div class="aspect-w-16 aspect-h-9">
+                            <img src="https://www.fightersgeneration.com/nz5/game/kof98/kof98-screenshot${Math.floor(Math.random() * 5) + 1}.jpg" alt="KOF Screenshot" class="w-full h-auto">
+                        </div>
+                    </div>
+                `;
+                carousel.appendChild(item);
+            });
+            
+            // Center the current index
+            carousel.scrollLeft = currentCarouselIndex * 315;
+        }
+
+        // Helper function to get border color based on rank
+        function getBorderColor(rank) {
+            switch(rank) {
+                case 'A': return 'border-green-500';
+                case 'B': return 'border-blue-500';
+                case 'C': return 'border-yellow-500';
+                case 'D': return 'border-orange-500';
+                case 'E': return 'border-red-500';
+                default: return 'border-gray-500';
+            }
+        }
+
+        // Helper function to get text color based on rank
+        function getTextColor(rank) {
+            switch(rank) {
+                case 'A': return 'neon-red';
+                case 'B': return 'neon-blue';
+                case 'C': return 'neon-yellow';
+                case 'D': return 'text-orange-400';
+                case 'E': return 'text-red-400';
+                default: return 'text-gray-400';
+            }
+        }
+
+        // Helper function to get rank class
+        function getRankClass(rank) {
+            return `rank-${rank}`;
+        }
+
+        // Next carousel slide
+        function nextSlide() {
+            const carousel = document.getElementById('championship-carousel');
+            const items = carousel.querySelectorAll('.carousel-item');
+            
+            if (currentCarouselIndex < items.length - 1) {
+                currentCarouselIndex++;
+                carousel.scrollLeft = currentCarouselIndex * 315;
+            }
+        }
+
+        // Previous carousel slide
+        function prevSlide() {
+            const carousel = document.getElementById('championship-carousel');
+            
+            if (currentCarouselIndex > 0) {
+                currentCarouselIndex--;
+                carousel.scrollLeft = currentCarouselIndex * 315;
+            }
+        }
+    </script>
+</body>
+</html>
