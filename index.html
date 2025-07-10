@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> KOF DA ANTIGA - Arcade Team - JD ALEGRIA</title>  
+    <title> KOF DA ANTIGA - Torneio Chama Baixo  - JD ALEGRIA</title>  
     <img src="https://i.ibb.co/N6SHXvwK/tela.jpg"alt="tela" class="w-full h-full object-cover">
        <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -201,7 +201,7 @@
                 </li>
                 <li>
                     <button onclick="openTab('championship')" class="arcade-font neon-blue bg-black bg-opacity-50 px-4 py-2 rounded-lg border-2 border-blue-400 hover:bg-blue-400 hover:text-black transition-all">
-                        <i class="fas fa-trophy mr-1"></i>CAMPEONATO
+                        <i class="fas fa-trophy mr-1"></i>TORNEIO
                     </button>
                 </li>
                 <li>
@@ -1042,6 +1042,20 @@
                 carousel.scrollLeft = currentCarouselIndex * 315;
             }
         }
+        // Define um NOME ÚNICO para seu contador (ex: 'meu-site.github.io')
+         const NAMESPACE = "https://pne-de-cai.github.io/kofdaantiga/";
+        const KEY = "visitas-totais";
+
+        // Incrementa +1 visita e mostra o total
+        fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("contador").textContent = data.value;
+            })
+            .catch(error => {
+                console.error("Erro ao carregar contador:", error);
+                document.getElementById("contador").textContent = "Erro";
+            });
     </script>
 </body>
 </html>
