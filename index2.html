@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOF DA ANTIGA - Torneio Chama Baixo - JD ALEGRIA</title>
+    <img src="https://i.ibb.co/N6SHXvwK/tela.jpg" alt="Tela" class="w-full h-full object-cover">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
+        :root {
+            --neon-red: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-yellow: #f7f736;
+        }
+        body {
+            background-color: #0a0a1a;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 42, 109, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(5, 217, 232, 0.1) 0%, transparent 20%);
+        }
+        .arcade-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        .neon-red {
+            color: var(--neon-red);
+            text-shadow: 0 0 5px var(--neon-red), 0 0 10px var(--neon-red);
+        }
+        .neon-blue {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        }
+        .neon-purple {
+            color: var(--neon-purple);
+            text-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-purple);
+        }
+        .neon-yellow {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 5px var(--neon-yellow), 0 0 10px var(--neon-yellow);
+        }
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(0, 0, 0, 0) 50%,
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .glow-box {
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            animation: pulse 2s infinite alternate;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            }
+            100% {
+                box-shadow: 0 0 20px var(--neon-blue), inset 0 0 20px var(--neon-blue);
+            }
+        }
+        .rank-A {
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        .rank-B {
+            color: #00cc00;
+            text-shadow: 0 0 5px #00cc00;
+        }
+        .rank-C {
+            color: #ffff00;
+            text-shadow: 0 0 5px #ffff00;
+        }
+        .rank-D {
+            color: #ff9900;
+            text-shadow: 0 0 5px #ff9900;
+        }
+        .rank-E {
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-item {
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+            width: 300px;
+            margin-right: 15px;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-purple);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-red);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1;}
+        }
+        .character-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 42, 109, 0.3);
+        }
+        .loading-bar {
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-red), var(--neon-purple), var(--neon-blue));
+            background-size: 200% 100%;
+            animation: loading 2s linear infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        /* Sorteio styles */
+        .slot-machine {
+            perspective: 1000px;
+        }
+        .slot-wheel {
+            width: 100%;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s;
+        }
+        .slot-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--neon-yellow);
+            opacity: 0;
+            z-index: 1001;
+        }
+        .vs-badge {
+            background: linear-gradient(45deg, var(--neon-red), var(--neon-purple));
+            color: white;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        .matchup-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .matchup-card:hover {
+            border-color: var(--neon-yellow);
+            transform: scale(1.02);
+        }
+        .winner-glow {
+            animation: winnerGlow 2s infinite alternate;
+            border-color: var(--neon-yellow) !important;
+        }
+        @keyframes winnerGlow {
+            0% {
+                box-shadow: 0 0 10px var(--neon-yellow);
+            }
+            100% {
+                box-shadow: 0 0 25px var(--neon-yellow), 0 0 35px var(--neon-yellow);
+            }
+        }
+        .spinning {
+            animation: spin 0.1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotateX(0deg); }
+            100% { transform: rotateX(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="scanlines"></div>
+<div class="loading-bar"></div>
+
+<header class="container mx-auto py-6 px-4">
+    <div class="text-center mb-8">
+        <h1 class="arcade-font neon-red text-4xl md:text-6xl mb-4">KOF DA ANTIGA</h1>
+        <p class="arcade-font neon-blue text-sm md:text-lg">THE ULTIMATE CHAMA BAIXO 2° Edition</p>
+        <div class="flex justify-center mt-4">
+            <div class="w-16 h-1 bg-purple-500 mx-2"></div>
+            <div class="w-16 h-1 bg-blue-500 mx-2"></div>
+            <div class="w-16 h-1 bg-red-500 mx-2"></div>
+        </div>
+    </div>
+    <nav class="flex justify-center mb-2">
+        <ul class="flex space-x-2 md:space-x-4">
+            <li>
+                <button onclick="openTab('members')" class="arcade-font neon-yellow bg-black
+                    bg-opacity-50 px-4 py-2 rounded-lg border-2 border-yellow-400 hover:bg-yellow-400
+                    hover:text-black transition-all">
+                    <i class="fas fa-users mr-1"></i>MEMBROS
+                </button>
+            </li>
+            <li>
+                <button onclick="openTab('championship')" class="arcade-font neon-blue bg-black
+                    bg-opacity-50 px-4 py-2 rounded-lg border-2 border-blue-400 hover:bg-blue-400
+                    hover:text-black transition-all">
+                    <i class="fas fa-trophy mr-1"></i>TORNEIO 2024
+                </button>
+            </li>
+            <li>
+                <button onclick="openTab('sorteio')" class="arcade-font neon-purple bg-black
+                    bg-opacity-50 px-4 py-2 rounded-lg border-2 border-purple-400 hover:bg-purple-400
+                    hover:text-black transition-all">
+                    <i class="fas fa-random mr-1"></i>SORTEIO
+                </button>
+            </li>
+            <li>
+                <button onclick="window.open('https://docs.google.com/spreadsheets/d/1NSI5XNpZc5E51BjJnDSA8kCo-yPv30yOHO2eWXlpsqU/edit?usp=sharing', '_blank')"
+                    class="arcade-font neon-blue bg-black bg-opacity-50 px-4 py-2 rounded-lg border-2 border-blue-400 hover:bg-blue-400 hover:text-black transition-all">
+                    <i class="fas fa-table mr-1"></i>TABELA 2025
+                </button>
+            </li>
+            <li>
+                <button onclick="openTab('gallery')" class="arcade-font neon-purple bg-black
+                    bg-opacity-50 px-4 py-2 rounded-lg border-2 border-purple-400 hover:bg-purple-400
+                    hover:text-black transition-all">
+                    <i class="fas fa-images mr-1"></i>GALERIA
+                </button>
+            </li>
+            <li>
+                <a href="https://youtu.be/V_ZzigsYlw8" target="_blank" class="arcade-font
+                    text-gray-400 hover:text-red-500 bg-black bg-opacity-50 px-4 py-2 rounded-lg border-2
+                    border-gray-400 hover:bg-red-400 hover:text-black transition-all">
+                    <i class="fab fa-youtube mr-1"></i>LIVE
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<main class="container mx-auto px-4 pb-16">
+    <!-- Aba de Membros (original) -->
+    <div id="members" class="tab-content active">
+        <h2 class="arcade-font neon-red text-2xl md:text-3xl mb-6 text-center">OS GUERREIROS DO JARDIM ALEGRIA</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Cards dos membros (mantidos do código original) -->
+            <div class="character-card bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box">
+                <div class="p-4">
+                    <div class="flex items-center mb-3">
+                        <div class="w-16 h-16 bg-red-900 rounded-full overflow-hidden border-2 border-red-500">
+                            <img src="https://www.fightersgeneration.com/np7/char/gifs/vanessa/attacks/vanessa-sway.gif"
+                                alt="Juninho" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="arcade-font neon-red text-lg">Juninho</h3>
+                            <p class="text-gray-300 text-sm">CARAMELO hitbox</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-3">Mestre dos combos, lançador de ponte aquele que pisa no pescoço.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="arcade-font rank-C text-sm">CLASSIFICAÇÃO: C</span>
+                        <span class="text-yellow-400 text-sm"><i class="fas fa-trophy mr-1"></i> 42 vitórias</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Outros cards... (mantenha todos os outros cards do código original) -->
+        </div>
+    </div>
+
+    <!-- Aba de Torneio (original) -->
+    <div id="championship" class="tab-content">
+        <!-- Conteúdo original do torneio -->
+        <h2 class="arcade-font neon-blue text-2xl md:text-3xl mb-6 text-center">RANKING OFICIAL DO TORNEIO</h2>
+        <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box mb-8">
+            <div class="p-4">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="arcade-font neon-yellow text-sm border-b border-yellow-400">
+                                <th class="px-4 py-2">POS</th>
+                                <th class="px-4 py-2 text-left">NOME</th>
+                                <th class="px-4 py-2">VITÓRIAS</th>
+                                <th class="px-4 py-2">DERROTAS</th>
+                                <th class="px-4 py-2">RANK</th>
+                                <th class="px-4 py-2">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-table">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Resto do conteúdo original... -->
+    </div>
+
+    <!-- NOVA ABA DE SORTEIO -->
+    <div id="sorteio" class="tab-content">
+        <h2 class="arcade-font neon-purple text-2xl md:text-3xl mb-6 text-center">SORTEIO DE ENFRENTAMENTOS</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Painel de Controle -->
+            <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box p-4">
+                <h3 class="arcade-font neon-red text-xl mb-3">CONTROLE DO SORTEIO</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-400 mb-2">Tipo de Sorteio:</label>
+                        <div class="flex space-x-2">
+                            <button onclick="setTournamentType('eliminatoria')" id="btn-eliminatoria" 
+                                class="flex-1 arcade-font bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                                Eliminatória
+                            </button>
+                            <button onclick="setTournamentType('todos')" id="btn-todos" 
+                                class="flex-1 arcade-font bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                Todos vs Todos
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-400 mb-2">Número de Participantes:</label>
+                        <div class="flex items-center">
+                            <button onclick="changeParticipantCount(-1)" class="arcade-font bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-l-lg">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="participant-count" min="2" max="20" value="8" 
+                                class="flex-1 bg-gray-800 text-white text-center px-4 py-2 arcade-font">
+                            <button onclick="changeParticipantCount(1)" class="arcade-font bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-r-lg">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-400 mb-2">Opções Avançadas:</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="balance-by-rank" class="mr-2" checked>
+                                <span class="text-sm">Balancear por ranking</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="avoid-recent-matches" class="mr-2">
+                                <span class="text-sm">Evitar confrontos recentes</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button onclick="startDraw()" class="w-full arcade-font bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg mt-4">
+                        <i class="fas fa-play mr-2"></i>INICIAR SORTEIO
+                    </button>
+                    
+                    <button onclick="resetDraw()" class="w-full arcade-font bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg">
+                        <i class="fas fa-redo mr-2"></i>REINICIAR SORTEIO
+                    </button>
+                </div>
+            </div>
+
+            <!-- Máquina de Sorteio Visual -->
+            <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box p-4 md:col-span-2">
+                <h3 class="arcade-font neon-blue text-xl mb-3 text-center">RODA DA SORTE</h3>
+                <div class="flex flex-col items-center justify-center h-64">
+                    <div class="slot-machine w-full max-w-md">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="text-center">
+                                <div class="slot-wheel" id="player1-wheel">
+                                    <!-- Itens serão gerados via JavaScript -->
+                                </div>
+                                <p class="arcade-font text-yellow-400 mt-2">JOGADOR 1</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="slot-wheel" id="player2-wheel">
+                                    <!-- Itens serão gerados via JavaScript -->
+                                </div>
+                                <p class="arcade-font text-yellow-400 mt-2">JOGADOR 2</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="vs-badge inline-block arcade-font mb-4">VS</div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button onclick="spinSlotMachine()" id="spin-btn" 
+                            class="arcade-font bg-yellow-600 hover:bg-yellow-700 text-black px-6 py-3 rounded-lg">
+                            <i class="fas fa-random mr-2"></i>GIRAR SORTEIO
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados dos Confrontos -->
+        <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box p-4 mb-8">
+            <h3 class="arcade-font neon-yellow text-xl mb-3">CONFRONTOS SORTEADOS</h3>
+            <div id="matchups-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Os confrontos serão inseridos aqui via JavaScript -->
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-random text-4xl mb-2"></i>
+                    <p class="arcade-font">Nenhum sorteio realizado ainda</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Participantes -->
+        <div class="bg-gray-900 bg-opacity-70 rounded-lg overflow-hidden glow-box p-4">
+            <h3 class="arcade-font neon-purple text-xl mb-3">PARTICIPANTES DO SORTEIO</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="arcade-font neon-blue text-sm border-b border-blue-400">
+                            <th class="px-4 py-2">#</th>
+                            <th class="px-4 py-2 text-left">JOGADOR</th>
+                            <th class="px-4 py-2">RANK</th>
+                            <th class="px-4 py-2">VITÓRIAS</th>
+                            <th class="px-4 py-2">STATUS</th>
+                            <th class="px-4 py-2">AÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participants-table">
+                        <!-- Linhas serão geradas via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aba de Galeria (original) -->
+    <div id="gallery" class="tab-content">
+        <!-- Conteúdo original da galeria -->
+    </div>
+</main>
+
+<footer>
+    <div class="container mx-auto px-4 py-4 text-center text-gray-500 text-sm">
+        <p>&copy; 2024 KOF DA ANTIGA. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+<script>
+    // =======================================================================
+    // CORREÇÃO: Função para alternar entre as abas do menu
+    // =======================================================================
+    function openTab(tabId) {
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        const selectedTab = document.getElementById(tabId);
+        
+        if (selectedTab) {
+            selectedTab.classList.add('active');
+        }
+        
+        if (tabId === 'championship') {
+            if (typeof updateCarousel === 'function') {
+                updateCarousel();
+            }
+        }
+        
+        if (tabId === 'sorteio') {
+            if (typeof initSorteio === 'function') {
+                initSorteio();
+            }
+        }
+    }
+
+    // =======================================================================
+    // DADOS DOS MEMBROS (mantidos do original)
+    // =======================================================================
+    const teamMembers = [
+        { id: 1, name: "Juninho", position: 2, wins: 42, losses: 10, rank: "C", character: "Juninho", role: "Líder do Esquadrão", description: "Mestre das chamas e estrategista principal. 15 anos de experiência em torneios.", image: "https://i.ibb.co/ZzF0vWYD/junu.jpg" },
+        { id: 2, name: "Thiago James", position: 1, wins: 44, losses: 10, rank: "D", character: "Thiago James", role: "Especialista em Combate", description: "Técnicas brutais e imprevisíveis. 12 anos de torneios com 90% de vitórias.", image: "https://i.ibb.co/rK7SJX0j/thiagobeico.jpg" },
+        { id: 3, name: "Severo", position: 3, wins: 36, losses: 12, rank: "D", character: "Severo", role: "Lutador de Rua", description: "Estilo único adaptado de vários torneios. 18 anos de experiência em combate.", image: "https://i.ibb.co/hJS54jXD/severo.jpg" },
+        { id: 4, name: "MuDmelo", position: 5, wins: 32, losses: 16, rank: "D", character: "MuDmelo", role: "O senhor dos tatuadores", description: "Tentando acertar os combos do Juninho, golpes aleatórios kamikaze de combo.", image: "https://i.ibb.co/L519p4vY/mudmelo.jpg" },
+        { id: 5, name: "BIG", position: 7, wins: 30, losses: 20, rank: "D", character: "BIG", role: "Chinela de pau", description: "Trash talk, fala mas não faz o comentaristas do jogo dos outros.", image: "https://i.ibb.co/K2T0Ym7H/big.jpg" },
+        { id: 6, name: "Suino", position: 6, wins: 28, losses: 22, rank: "D", character: "Suino", role: "Campeão imaginario", description: "Tecnicas imprevisíveis, a lendária arte do combo com start e Super Mega Ultra combo de 1 HIT.", image: "https://i.ibb.co/7jX1j0dK/suino.jpg" },
+        { id: 7, name: "ZEU", position: 8, wins: 26, losses: 24, rank: "D", character: "ZEU", role: "Coach", description: "Esquiva e agarra e vice versa, imortal com 1 de HP.", image: "https://i.ibb.co/9V5x1wJ/zeu.jpg" },
+        { id: 8, name: "Levy", position: 9, wins: 24, losses: 26, rank: "D", character: "Levy", role: "Idol Psíquica", description: "Combina habilidades psíquicas com técnicas de luta. 7 anos em torneios.", image: "https://i.ibb.co/8b7vYxP/levy.jpg" },
+        { id: 9, name: "Bores", position: 10, wins: 22, losses: 28, rank: "D", character: "Bores", role: "Poder Bruto", description: "Força física excepcional. 5 anos de competições com estilo agressivo.", image: "https://i.ibb.co/7n0y70C/bores.jpg" },
+        { id: 10, name: "Cassiano", position: 4, wins: 34, losses: 14, rank: "D", character: "Cassiano", role: "Grappler Elétrica", description: "Técnicas de grappling com choques elétricos. 6 anos de torneios.", image: "https://i.ibb.co/Mnhm6y8/cassiano.jpg" },
+        { id: 11, name: "Vaga01", position: 11, wins: 18, losses: 30, rank: "E", character: "Vaga01", role: "Lutador Misterioso", description: "Um novo talento com potencial desconhecido.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+        { id: 12, name: "Thiago Valverde", position: 13, wins: 14, losses: 34, rank: "D", character: "Thiago Valverde", role: "Estilo Adaptável", description: "Capacidade de mudar a estratégia de luta. 10 anos de torneios.", image: "https://i.ibb.co/zQx7g6D/valverde.jpg" },
+        { id: 13, name: "Miro", position: 14, wins: 12, losses: 36, rank: "D", character: "Miro", role: "Poder Explosivo", description: "Força bruta e explosiva. 12 anos em combate.", image: "https://i.ibb.co/QFKFhRC1/mir.jpg" },
+        { id: 14, name: "Takito", position: 15, wins: 10, losses: 38, rank: "D", character: "Takito", role: "Karatê Moderno", description: "Estilo refinado de karatê. 8 anos de torneios.", image: "https://i.ibb.co/kVRtF4cT/luuc.jpg" },
+        { id: 15, name: "EWD", position: 16, wins: 0, losses: 0, rank: "E", character: "EWD", role: "Especialista em Chutes", description: "Técnicas de Muay Thai adaptadas. 7 anos de experiência.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+        { id: 16, name: "Vaga02", position: 17, wins: 0, losses: 0, rank: "E", character: "Vaga02", role: "Força Descomunal", description: "Poder físico extremo. 5 anos em torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+        { id: 17, name: "Vaga03", position: 18, wins: 0, losses: 0, rank: "E", character: "Vaga03", role: "Garras Afiadas", description: "Ataques rápidos e letais com garras. 8 anos de torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+        { id: 18, name: "Vaga04", position: 19, wins: 2, losses: 40, rank: "E", character: "Vaga04", role: "Eletricidade Dinâmica", description: "Combina eletricidade com artes marciais. 6 anos de torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+        { id: 19, name: "Vaga05", position: 20, wins: 0, losses: 42, rank: "E", character: "Vaga05", role: "Estilo Refinado", description: "Estilo refinado em ser o ultimo colocado.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" },
+        { id: 20, name: "Vaga06", position: 12, wins: 6, losses: 32, rank: "E", character: "Vaga06", role: "Força Descomunal", description: "Poder físico extremo. 5 anos em torneios.", image: "https://i.ibb.co/N6SHXvwK/tela.jpg" }
+    ];
+
+    // =======================================================================
+    // VARIÁVEIS E FUNÇÕES DO SORTEIO
+    // =======================================================================
+    let tournamentType = 'eliminatoria';
+    let selectedParticipants = [];
+    let matchups = [];
+    let recentMatchups = [];
+    let isSpinning = false;
+    
+    function initSorteio() {
+        updateParticipantsTable();
+        createSlotWheels();
+    }
+    
+    function setTournamentType(type) {
+        tournamentType = type;
+        
+        document.getElementById('btn-eliminatoria').classList.remove('bg-purple-700', 'bg-blue-700');
+        document.getElementById('btn-todos').classList.remove('bg-purple-700', 'bg-blue-700');
+        
+        if (type === 'eliminatoria') {
+            document.getElementById('btn-eliminatoria').classList.add('bg-purple-700');
+            document.getElementById('btn-todos').classList.add('bg-blue-600');
+        } else {
+            document.getElementById('btn-eliminatoria').classList.add('bg-purple-600');
+            document.getElementById('btn-todos').classList.add('bg-blue-700');
+        }
+    }
+    
+    function changeParticipantCount(change) {
+        const input = document.getElementById('participant-count');
+        let value = parseInt(input.value) + change;
+        value = Math.max(2, Math.min(20, value));
+        input.value = value;
+        updateParticipantsTable();
+    }
+    
+    function updateParticipantsTable() {
+        const count = parseInt(document.getElementById('participant-count').value);
+        const tableBody = document.getElementById('participants-table');
+        tableBody.innerHTML = '';
+        
+        // Ordena membros por posição
+        const sortedMembers = [...teamMembers].sort((a, b) => a.position - b.position).slice(0, count);
+        
+        sortedMembers.forEach((member, index) => {
+            const isSelected = selectedParticipants.some(p => p.id === member.id);
+            const row = document.createElement('tr');
+            row.className = 'border-b border-gray-700 hover:bg-gray-800';
+            row.innerHTML = `
+                <td class="px-4 py-3 text-center">${index + 1}</td>
+                <td class="px-4 py-3 flex items-center">
+                    <img src="${member.image}" alt="${member.name}" class="w-8 h-8 rounded-full mr-3">
+                    <span>${member.name}</span>
+                </td>
+                <td class="px-4 py-3 text-center arcade-font ${getRankClass(member.rank)}">${member.rank}</td>
+                <td class="px-4 py-3 text-center text-green-400">${member.wins}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="px-2 py-1 rounded ${isSelected ? 'bg-green-600' : 'bg-gray-600'} text-xs">
+                        ${isSelected ? 'SELECIONADO' : 'DISPONÍVEL'}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-center">
+                    <button onclick="toggleParticipant(${member.id})" class="arcade-font ${isSelected ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'} text-white px-3 py-1 rounded text-xs">
+                        ${isSelected ? 'REMOVER' : 'ADICIONAR'}
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+    
+    function toggleParticipant(memberId) {
+        const member = teamMembers.find(m => m.id === memberId);
+        const index = selectedParticipants.findIndex(p => p.id === memberId);
+        
+        if (index === -1) {
+            selectedParticipants.push(member);
+        } else {
+            selectedParticipants.splice(index, 1);
+        }
+        
+        updateParticipantsTable();
+    }
+    
+    function startDraw() {
+        if (selectedParticipants.length < 2) {
+            alert('Selecione pelo menos 2 participantes para o sorteio!');
+            return;
+        }
+        
+        matchups = [];
+        
+        if (tournamentType === 'eliminatoria') {
+            createEliminationBracket();
+        } else {
+            createRoundRobin();
+        }
+        
+        displayMatchups();
+        updateParticipantsTable();
+    }
+    
+    function createEliminationBracket() {
+        // Embaralha os participantes
+        const shuffled = [...selectedParticipants].sort(() => Math.random() - 0.5);
+        
+        // Balanceia por ranking se ativado
+        const balanceByRank = document.getElementById('balance-by-rank').checked;
+        if (balanceByRank) {
+            shuffled.sort((a, b) => {
+                const rankOrder = { 'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5 };
+                return rankOrder[a.rank] - rankOrder[b.rank];
+            });
+        }
+        
+        // Cria confrontos
+        for (let i = 0; i < shuffled.length; i += 2) {
+            if (i + 1 < shuffled.length) {
+                const player1 = shuffled[i];
+                const player2 = shuffled[i + 1];
+                
+                // Evita confrontos recentes se ativado
+                const avoidRecent = document.getElementById('avoid-recent-matches').checked;
+                if (avoidRecent && isRecentMatchup(player1.id, player2.id)) {
+                    // Encontra outro oponente
+                    for (let j = i + 2; j < shuffled.length; j++) {
+                        if (!isRecentMatchup(player1.id, shuffled[j].id)) {
+                            [shuffled[i + 1], shuffled[j]] = [shuffled[j], shuffled[i + 1]];
+                            break;
+                        }
+                    }
+                }
+                
+                matchups.push({
+                    id: matchups.length + 1,
+                    player1: shuffled[i],
+                    player2: shuffled[i + 1],
+                    winner: null,
+                    completed: false
+                });
+            } else {
+                // Jogador recebe bye (passa direto)
+                matchups.push({
+                    id: matchups.length + 1,
+                    player1: shuffled[i],
+                    player2: null,
+                    winner: shuffled[i],
+                    completed: true,
+                    isBye: true
+                });
+            }
+        }
+        
+        // Salva nos confrontos recentes
+        saveRecentMatchups();
+    }
+    
+    function createRoundRobin() {
+        const participants = [...selectedParticipants];
+        
+        // Para cada jogador, cria confrontos com todos os outros
+        for (let i = 0; i < participants.length; i++) {
+            for (let j = i + 1; j < participants.length; j++) {
+                matchups.push({
+                    id: matchups.length + 1,
+                    player1: participants[i],
+                    player2: participants[j],
+                    winner: null,
+                    completed: false,
+                    round: 1
+                });
+            }
+        }
+    }
+    
+    function isRecentMatchup(player1Id, player2Id) {
+        return recentMatchups.some(match => 
+            (match.player1 === player1Id && match.player2 === player2Id) ||
+            (match.player1 === player2Id && match.player2 === player1Id)
+        );
+    }
+    
+    function saveRecentMatchups() {
+        matchups.forEach(match => {
+            if (match.player1 && match.player2) {
+                recentMatchups.push({
+                    player1: match.player1.id,
+                    player2: match.player2.id,
+                    timestamp: Date.now()
+                });
+            }
+        });
+        
+        // Mantém apenas os últimos 20 confrontos
+        if (recentMatchups.length > 20) {
+            recentMatchups = recentMatchups.slice(-20);
+        }
+    }
+    
+    function displayMatchups() {
+        const container = document.getElementById('matchups-container');
+        container.innerHTML = '';
+        
+        if (matchups.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-8 text-gray-500 md:col-span-2">
+                    <i class="fas fa-random text-4xl mb-2"></i>
+                    <p class="arcade-font">Nenhum sorteio realizado ainda</p>
+                </div>
+            `;
+            return;
+        }
+        
+        matchups.forEach(matchup => {
+            const card = document.createElement('div');
+            card.className = `matchup-card bg-gray-800 bg-opacity-70 rounded-lg p-4 ${matchup.winner ? 'winner-glow' : ''}`;
+            
+            if (matchup.isBye) {
+                card.innerHTML = `
+                    <div class="text-center">
+                        <div class="mb-2">
+                            <span class="px-3 py-1 bg-purple-600 rounded-full text-xs">BYE</span>
+                        </div>
+                        <div class="flex items-center justify-center mb-3">
+                            <div class="text-center">
+                                <img src="${matchup.player1.image}" alt="${matchup.player1.name}" class="w-16 h-16 rounded-full mx-auto border-2 border-yellow-400">
+                                <h4 class="arcade-font neon-yellow mt-2">${matchup.player1.name}</h4>
+                                <p class="text-gray-400 text-sm">Passa direto para a próxima fase</p>
+                            </div>
+                        </div>
+                        <div class="text-green-400 arcade-font">
+                            <i class="fas fa-trophy mr-1"></i> CLASSIFICADO
+                        </div>
+                    </div>
+                `;
+            } else {
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="arcade-font">CONFRONTO ${matchup.id}</h4>
+                        <span class="px-2 py-1 ${matchup.completed ? 'bg-green-600' : 'bg-yellow-600'} rounded text-xs">
+                            ${matchup.completed ? 'FINALIZADO' : 'PENDENTE'}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center ${matchup.winner && matchup.winner.id === matchup.player1.id ? 'winner-glow p-2 rounded' : ''}">
+                            <img src="${matchup.player1.image}" alt="${matchup.player1.name}" class="w-12 h-12 rounded-full mx-auto border-2 ${getRankBorderClass(matchup.player1.rank)}">
+                            <h5 class="arcade-font mt-2 ${getRankClass(matchup.player1.rank)}">${matchup.player1.name}</h5>
+                            <p class="text-gray-400 text-sm">${matchup.player1.role}</p>
+                            <p class="text-green-400 text-xs"><i class="fas fa-trophy mr-1"></i>${matchup.player1.wins} vitórias</p>
+                        </div>
+                        <div class="text-center ${matchup.winner && matchup.winner.id === matchup.player2.id ? 'winner-glow p-2 rounded' : ''}">
+                            <img src="${matchup.player2.image}" alt="${matchup.player2.name}" class="w-12 h-12 rounded-full mx-auto border-2 ${getRankBorderClass(matchup.player2.rank)}">
+                            <h5 class="arcade-font mt-2 ${getRankClass(matchup.player2.rank)}">${matchup.player2.name}</h5>
+                            <p class="text-gray-400 text-sm">${matchup.player2.role}</p>
+                            <p class="text-green-400 text-xs"><i class="fas fa-trophy mr-1"></i>${matchup.player2.wins} vitórias</p>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <div class="vs-badge inline-block mb-2">VS</div>
+                        <div class="flex justify-center space-x-2">
+                            <button onclick="setWinner(${matchup.id}, ${matchup.player1.id})" class="arcade-font bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs">
+                                ${matchup.player1.name} VENCE
+                            </button>
+                            <button onclick="setWinner(${matchup.id}, ${matchup.player2.id})" class="arcade-font bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs">
+                                ${matchup.player2.name} VENCE
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.appendChild(card);
+        });
+    }
+    
+    function setWinner(matchupId, winnerId) {
+        const matchup = matchups.find(m => m.id === matchupId);
+        if (matchup) {
+            matchup.winner = matchup.player1.id === winnerId ? matchup.player1 : matchup.player2;
+            matchup.completed = true;
+            displayMatchups();
+            createConfetti();
+        }
+    }
+    
+    function createSlotWheels() {
+        const wheel1 = document.getElementById('player1-wheel');
+        const wheel2 = document.getElementById('player2-wheel');
+        
+        if (!wheel1 || !wheel2) return;
+        
+        // Limpa as wheels
+        wheel1.innerHTML = '';
+        wheel2.innerHTML = '';
+        
+        // Adiciona vários itens para o efeito de rotação
+        for (let i = 0; i < 20; i++) {
+            const randomMember1 = teamMembers[Math.floor(Math.random() * teamMembers.length)];
+            const randomMember2 = teamMembers[Math.floor(Math.random() * teamMembers.length)];
+            
+            const item1 = document.createElement('div');
+            item1.className = 'slot-item';
+            item1.style.transform = `rotateX(${i * 18}deg) translateZ(250px)`;
+            item1.style.backgroundColor = getRankColor(i);
+            item1.innerHTML = `<span class="arcade-font">${randomMember1.name}</span>`;
+            
+            const item2 = document.createElement('div');
+            item2.className = 'slot-item';
+            item2.style.transform = `rotateX(${i * 18}deg) translateZ(250px)`;
+            item2.style.backgroundColor = getRankColor(i);
+            item2.innerHTML = `<span class="arcade-font">${randomMember2.name}</span>`;
+            
+            wheel1.appendChild(item1);
+            wheel2.appendChild(item2);
+        }
+    }
+    
+    function spinSlotMachine() {
+        if (isSpinning) return;
+        
+        const spinBtn = document.getElementById('spin-btn');
+        spinBtn.disabled = true;
+        spinBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>GIRANDO...';
+        isSpinning = true;
+        
+        const wheel1 = document.getElementById('player1-wheel');
+        const wheel2 = document.getElementById('player2-wheel');
+        
+        // Adiciona classe de rotação
+        wheel1.classList.add('spinning');
+        wheel2.classList.add('spinning');
+        
+        // Seleciona dois participantes aleatórios
+        const availableParticipants = selectedParticipants.length > 0 ? 
+            selectedParticipants : teamMembers.slice(0, 8);
+        
+        if (availableParticipants.length < 2) {
+            alert('Selecione pelo menos 2 participantes!');
+            resetSpin();
+            return;
+        }
+        
+        const player1 = availableParticipants[Math.floor(Math.random() * availableParticipants.length)];
+        let player2;
+        
+        do {
+            player2 = availableParticipants[Math.floor(Math.random() * availableParticipants.length)];
+        } while (player2.id === player1.id && availableParticipants.length > 1);
+        
+        // Para a animação após 3 segundos
+        setTimeout(() => {
+            wheel1.classList.remove('spinning');
+            wheel2.classList.remove('spinning');
+            
+            // Mostra os resultados
+            setTimeout(() => {
+                showSlotResult(player1, player2);
+                resetSpin();
+            }, 500);
+        }, 3000);
+    }
+    
+    function showSlotResult(player1, player2) {
+        // Cria um novo confronto temporário
+        const tempMatchup = {
+            id: matchups.length + 1,
+            player1: player1,
+            player2: player2,
+            winner: null,
+            completed: false,
+            isSlotResult: true
+        };
+        
+        // Adiciona aos matchups
+        matchups.push(tempMatchup);
+        
+        // Atualiza a exibição
+        displayMatchups();
+        
+        // Cria confetti
+        createConfetti();
+        
+        // Mostra alerta
+        alert(`SORTEIO CONCLUÍDO!\n\n${player1.name} VS ${player2.name}\n\nBoa sorte aos competidores!`);
+    }
+    
+    function resetSpin() {
+        const spinBtn = document.getElementById('spin-btn');
+        spinBtn.disabled = false;
+        spinBtn.innerHTML = '<i class="fas fa-random mr-2"></i>GIRAR SORTEIO';
+        isSpinning = false;
+    }
+    
+    function resetDraw() {
+        selectedParticipants = [];
+        matchups = [];
+        updateParticipantsTable();
+        displayMatchups();
+        createSlotWheels();
+    }
+    
+    function createConfetti() {
+        const colors = ['#ff2a6d', '#05d9e8', '#d300c5', '#f7f736'];
+        
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.opacity = '1';
+            document.body.appendChild(confetti);
+            
+            // Animação
+            const animation = confetti.animate([
+                { transform: 'translateY(-100px) rotate(0deg)', opacity: 1 },
+                { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+            ], {
+                duration: 2000 + Math.random() * 2000,
+                easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
+            });
+            
+            // Remove após animação
+            animation.onfinish = () => confetti.remove();
+        }
+    }
+    
+    function getRankColor(index) {
+        const colors = [
+            'rgba(255, 42, 109, 0.8)',
+            'rgba(5, 217, 232, 0.8)',
+            'rgba(211, 0, 197, 0.8)',
+            'rgba(247, 247, 54, 0.8)',
+            'rgba(0, 255, 0, 0.8)'
+        ];
+        return colors[index % colors.length];
+    }
+    
+    function getRankBorderClass(rank) {
+        switch (rank) {
+            case 'A': return 'border-green-500';
+            case 'B': return 'border-green-400';
+            case 'C': return 'border-yellow-400';
+            case 'D': return 'border-orange-400';
+            case 'E': return 'border-red-400';
+            default: return 'border-gray-400';
+        }
+    }
+    
+    // =======================================================================
+    // FUNÇÕES EXISTENTES (mantidas do original)
+    // =======================================================================
+    function getRankClass(rank) {
+        return `rank-${rank}`;
+    }
+    
+    function getRankColorClass(rank) {
+        switch (rank) {
+            case 'A': return 'text-green-400';
+            case 'B': return 'text-green-400';
+            case 'C': return 'text-yellow-400';
+            case 'D': return 'text-orange-400';
+            case 'E': return 'text-red-400';
+            default: return 'text-gray-400';
+        }
+    }
+    
+    // =======================================================================
+    // INICIALIZAÇÃO
+    // =======================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        // Configuração inicial do sorteio
+        initSorteio();
+        setTournamentType('eliminatoria');
+        
+        // Inicializa outras partes do sistema
+        if (typeof updateRanks === 'function') updateRanks();
+        if (typeof updateRankingTable === 'function') updateRankingTable();
+        if (typeof updateCarousel === 'function') updateCarousel();
+    });
+</script>
+</body>
+</html>
